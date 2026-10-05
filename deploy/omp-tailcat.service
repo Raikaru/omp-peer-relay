@@ -1,0 +1,27 @@
+[Unit]
+Description=tailcat entry for omp-peer-relay (only clients in TAILCAT_ALLOW reach 127.0.0.1:7480)
+After=network-online.target omp-peer-relay.service
+Wants=network-online.target
+
+[Service]
+User=omp-tailcat
+Group=omp-tailcat
+EnvironmentFile=/etc/omp-tailcat.env
+# An empty --allow admits every client; refuse to start instead.
+ExecStartPre=/bin/sh -c 'test -n "$TAILCAT_ALLOW"'
+ExecStart=/usr/bin/tailcat serve --key=/var/lib/omp-tailcat/server.private.json --allow=${TAILCAT_ALLOW} 7480
+Restart=always
+RestartSec=3
+StateDirectory=omp-tailcat
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target
