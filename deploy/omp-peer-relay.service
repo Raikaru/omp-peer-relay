@@ -1,0 +1,28 @@
+[Unit]
+Description=omp peer relay (cross-machine agent coordination)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=omp-relay
+Group=omp-relay
+EnvironmentFile=/etc/omp-peer-relay.env
+ExecStart=/opt/omp-peer-relay/omp-peer-relay -db /var/lib/omp-peer-relay/relay.db
+Restart=always
+RestartSec=2
+StateDirectory=omp-peer-relay
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+LockPersonality=true
+MemoryDenyWriteExecute=true
+ReadWritePaths=/var/lib/omp-peer-relay
+
+[Install]
+WantedBy=multi-user.target
